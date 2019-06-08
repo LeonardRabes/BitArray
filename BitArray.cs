@@ -45,9 +45,10 @@ namespace Binary.Collections
         /// Create BitArray
         /// </summary>
         /// <param name="bytes">Given bytes</param>
-        public BitArray(byte[] bytes)
+        public BitArray(byte[] bytes, int bitCount)
         {
             internalBits = new List<byte>(bytes);
+            Count = bitCount;
             bitIndex = 0;
         }
 
