@@ -11,4 +11,8 @@ Manages a compact array of bit values, which are represented as Booleans. Simila
             bool[] bits = bitArray.GetBits(); // contains: true, false, true, false, false, true
             byte[] bytes = bitArray.GetBytes(); // contains: 164 (10100100)
             
+            foreach (var bit in bitArray)
+            {
+                Console.Write(item + " "); // Prints: true false true false false true 
+            }       
 ``` 

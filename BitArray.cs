@@ -1,22 +1,26 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Binary.Collections
 {
     /// <summary>
     /// Manages a compact array of bit values, which are represented as Booleans.
     /// </summary>
-    public class BitArray
+    public class BitArray : IEnumerable
     {
+        /// <summary>
+        /// Total Amount of Bits
+        /// </summary>
         public int Count { get; internal set; }
+        /// <summary>
+        /// Total Amount of Bytes
+        /// </summary>
         public int ByteCount { get => internalBits.Count; }
 
         private List<byte> internalBits;
         private int byteIndex; // currently active byte, increased every 8 bits
-        private byte bitIndex; // currently active bit of a byte [0..7]
+        private byte bitIndex; // currently active bit of a byte range[0..7]
         
         /// <summary>
         /// Create BitArray
@@ -32,7 +36,7 @@ namespace Binary.Collections
         /// Create BitArray
         /// </summary>
         /// <param name="bits">Given bits</param>
-        public BitArray(bool[] bits)
+        public BitArray(IEnumerable<bool> bits)
         {
             internalBits = new List<byte>();
             internalBits.Add(0);
@@ -45,11 +49,25 @@ namespace Binary.Collections
         /// Create BitArray
         /// </summary>
         /// <param name="bytes">Given bytes</param>
-        public BitArray(byte[] bytes, int bitCount)
+        public BitArray(IEnumerable<byte> bytes)
+        {
+            internalBits = new List<byte>(bytes);
+            Count = internalBits.Count * 8;
+            bitIndex = 0;
+            byteIndex = internalBits.Count - 1;
+        }
+
+        /// <summary>
+        /// Create BitArray
+        /// </summary>
+        /// <param name="bytes">Given bytes</param>
+        /// <param name="bitCount">Amount of bits in bytes array</param>
+        public BitArray(IEnumerable<byte> bytes, int bitCount)
         {
             internalBits = new List<byte>(bytes);
             Count = bitCount;
-            bitIndex = 0;
+            bitIndex = (byte)(Count % 8);
+            byteIndex = (Count - 1) / 8;
         }
 
         /// <summary>
@@ -78,7 +96,7 @@ namespace Binary.Collections
         /// Adds a range of bits to the end of the array.
         /// </summary>
         /// <param name="bits">Bits to be added</param>
-        public void AddRange(bool[] bits)
+        public void AddRange(IEnumerable<bool> bits)
         {
             foreach (var bit in bits)
             {
@@ -140,6 +158,17 @@ namespace Binary.Collections
             else if (val != bit && !bit)
             {
                 internalBits[index / 8] -= (byte)(0b10000000 >> index % 8);
+            }
+        }
+
+        /// <summary>
+        /// Get IEnumerator to use foreach loops
+        /// </summary>
+        public IEnumerator GetEnumerator()
+        {
+            for (int i = 0; i < Count; i++)
+            {
+                yield return GetValue(i);
             }
         }
 
