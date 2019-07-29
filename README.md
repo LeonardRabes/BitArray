@@ -13,6 +13,6 @@ Manages a compact array of bit values, which are represented as Booleans. Simila
             
             foreach (var bit in bitArray)
             {
-                Console.Write(item + " "); // Prints: true false true false false true 
+                Console.Write(bit + " "); // Prints: true false true false false true 
             }       
 ``` 
